@@ -19,12 +19,23 @@ describe Oystercard do
    	end
 
 
-   describe '#deduct' do
-   		it 'should deduct amount off balance passed through method' do
-   			expect{oyster.deduct(1)}.to change{ oyster.balance}.by -1
-   		end
+  describe '#deduct' do
+  		it 'should deduct amount off balance passed through method' do
+  			expect{oyster.deduct(1)}.to change{oyster.balance}.by -1
+  		end
+  	end
 
-   	end
+  describe '#in_journey?' do
+    it 'returns true when oyster is in journey' do
+      expect(oyster.in_journey?).to eq false
+    end
+  end
+
+  describe '#touch_in' do
+    it 'changes in_journey? to true' do
+      expect{oyster.touch_in}.to change{oyster.in_journey?}.to true
+    end
+  end
 
 
 end
