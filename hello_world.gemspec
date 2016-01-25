@@ -1,4 +1,4 @@
-Gem::Secifications.new do |j|
+Gem::Specification.new do |j|
   j.name = 'hello_world'
   j.version = '1'
   j.date = '2016-01-25'
@@ -8,5 +8,5 @@ Gem::Secifications.new do |j|
   j.email = 'jeremy.barrass@gmail.com'
   j.files = ['lib/hello_world.rb']
   j.homepage = 'http://rubygems.org/gems/hola'
-  j.licence = 'MIT, or me, depending on copyright law, I guess.'
+  j.license = 'MIT, or me, depending on copyright law, I guess.'
 end
