@@ -32,12 +32,20 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'sets the oyster card to be in journey' do
+      oystercard.top_up(1)
       expect{oystercard.touch_in}.to change{oystercard.in_journey?}.to true
+    end
+
+    context 'when balance is under £1' do
+      it 'raises an error' do
+        expect{oystercard.touch_in}.to raise_error 'Balance is too low'
+      end
     end
   end
 
   describe '#touch_out' do
     it 'sets the oyster card to no longer be in journey' do
+      oystercard.top_up(1)
       oystercard.touch_in
       expect{oystercard.touch_out}.to change{oystercard.in_journey?}.to false
     end
