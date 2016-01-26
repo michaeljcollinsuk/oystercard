@@ -55,15 +55,20 @@ describe Oystercard do
     end
 
     it 'sets the oyster card to no longer be in journey' do
-      expect{oystercard.touch_out}.to change{oystercard.in_journey?}.to false
+      expect{oystercard.touch_out(station)}.to change{oystercard.in_journey?}.to false
     end
 
     it 'deducts the minimum amount' do
-      expect{oystercard.touch_out}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
+      expect{oystercard.touch_out(station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
     end
 
     it 'sets entry station to nil' do
-      expect{oystercard.touch_out}.to change{oystercard.entry_station}.to nil
+      expect{oystercard.touch_out(station)}.to change{oystercard.entry_station}.to nil
+    end
+
+    it 'records the station where the oyster card is touched out' do
+      oystercard.touch_out(station)
+      expect(oystercard.exit_station).to eq station
     end
   end
 
