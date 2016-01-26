@@ -17,4 +17,11 @@ describe Oystercard do
     end
   end
 
+  describe '#deduct' do
+    it 'deducts the specified amount' do
+      oystercard.top_up(1)
+      expect{oystercard.deduct(1)}.to change{oystercard.balance}.by -1
+    end
+  end
+
 end
