@@ -4,6 +4,7 @@ class Oystercard
   DEFAULT_BALANCE = 0
   MAX_BALANCE = 90
   MIN_BALANCE = 1
+  MIN_FARE = 1
 
   def initialize(balance = DEFAULT_BALANCE)
     @balance = balance
@@ -13,10 +14,6 @@ class Oystercard
   def top_up(amount)
     raise "You may not exceed £#{MAX_BALANCE}" if @balance + amount > MAX_BALANCE
     @balance += amount
-  end
-
-  def deduct(amount)
-    @balance -= amount
   end
 
   def in_journey?
@@ -29,6 +26,14 @@ class Oystercard
   end
 
   def touch_out
+    deduct(MIN_FARE)
     @in_journey = false
   end
+
+  private
+
+  def deduct(amount)
+    @balance -= amount
+  end
+
 end

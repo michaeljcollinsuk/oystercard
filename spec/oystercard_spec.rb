@@ -17,13 +17,6 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'deducts the specified amount' do
-      oystercard.top_up(1)
-      expect{oystercard.deduct(1)}.to change{oystercard.balance}.by -1
-    end
-  end
-
   describe '#in_journey?' do
     it 'defaults to false' do
       expect(oystercard).to_not be_in_journey
@@ -44,10 +37,17 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
-    it 'sets the oyster card to no longer be in journey' do
+    before do
       oystercard.top_up(1)
       oystercard.touch_in
+    end
+
+    it 'sets the oyster card to no longer be in journey' do
       expect{oystercard.touch_out}.to change{oystercard.in_journey?}.to false
+    end
+
+    it 'deducts the minimum amount' do
+      expect{oystercard.touch_out}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
     end
   end
 
