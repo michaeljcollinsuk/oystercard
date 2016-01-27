@@ -21,12 +21,13 @@ class Oystercard
 
   def touch_in(station)
     raise 'Balance is too low' if @balance < MIN_BALANCE
+    deduct(PENALTY_FARE) if @journey.in_journey?
     @journey.entry_station(station)
   end
 
   def touch_out(station)
     @journey.exit_station(station)
-    
+    deduct(@journey.faree)
   end
 
   private
