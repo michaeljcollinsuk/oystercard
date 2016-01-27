@@ -9,10 +9,6 @@ describe Oystercard do
     expect(oystercard.balance).to eq 0
   end
 
-  it 'keeps track of journeys' do
-    expect(oystercard.journeys).to be_empty
-  end
-
   describe '#top_up' do
     it 'tops up the oystercard by the amount passed in' do
       expect{oystercard.top_up(5)}.to change{oystercard.balance}.by 5
@@ -24,20 +20,10 @@ describe Oystercard do
     end
   end
 
-  describe '#in_journey?' do
-    it 'defaults to false' do
-      expect(oystercard).to_not be_in_journey
-    end
-  end
-
   describe '#touch_in' do
     context 'oystercard is topped up' do
       before do
         oystercard.top_up(1)
-      end
-
-      it 'sets the oyster card to be in journey' do
-        expect{oystercard.touch_in(entry_station)}.to change{oystercard.in_journey?}.to true
       end
 
     end
@@ -49,7 +35,7 @@ describe Oystercard do
     end
   end
 
-  context 'oystercar is touched in' do
+  context 'oystercard is touched in' do
 
     before do
       oystercard.top_up(1)
@@ -57,19 +43,10 @@ describe Oystercard do
     end
 
     describe '#touch_out' do
-      it 'sets the oyster card to no longer be in journey' do
-        expect{oystercard.touch_out(exit_station)}.to change{oystercard.in_journey?}.to false
-      end
+
 
       it 'deducts the minimum amount' do
         expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
-      end
-
-      let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
-
-      it 'records a journey' do
-        oystercard.touch_out(exit_station)
-        expect(oystercard.journeys).to include journey
       end
     end
   end
