@@ -18,17 +18,24 @@ class Journey
 
   def exit_station(station)
     @current_journey[:exit_station] = station
-    save_journey(@current_journey)
-  end
-
-  def save_journey(journey)
     @journey_history << @current_journey
+    # journey_complete(@current_journey)
+    fare(@current_journey)
     @current_journey = {}
   end
 
-  # def fare
-  #   Oystercard::PENALTY_FARE if current_journey.has_key?(:exit_station) == false
-  #   Oystercard::MIN_FARE
+  # def save_journey(journey)
+  #   @journey_history << @current_journey
+  #   @current_journey = {}
   # end
+
+  def journey_complete?(current_journey)
+    current_journey.has_key?(:entry_station) && current_journey.has_key?(:exit_station)
+  end
+
+  def fare(journey_to_be_charged)
+    Oystercard::PENALTY_FARE if journey_complete?(journey_to_be_charged) == false
+    Oystercard::MIN_FARE
+  end
 
 end

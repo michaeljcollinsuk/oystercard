@@ -38,17 +38,18 @@ describe Journey do
     end
   end
 
-  # describe '#fare' do
-  #   it 'charges the minimum fare' do
-  #     journey.entry_station(:Bank)
-  #     journey.exit_station(:Aldgate)
-  #     expect(journey.fare).to eq Oystercard::MIN_FARE
-  #   end
-  #
-  #   it 'charges the penalty fare' do
-  #     journey.entry_station(:Bank)
-  #     expect(journey.fare).to eq Oystercard::PENALTY_FARE
-  #   end
-  # end
+  describe '#fare' do
+    it 'charges the minimum fare' do
+      journey.entry_station(:Bank)
+      journey.exit_station(:Aldgate)
+      expect(journey.fare).to eq Oystercard::MIN_FARE
+    end
+
+    it 'charges the penalty fare' do
+      journey.entry_station(:Bank)
+      journey.entry_station(:Whitechapel)
+      expect(journey.fare).to eq Oystercard::PENALTY_FARE
+    end
+  end
 
 end

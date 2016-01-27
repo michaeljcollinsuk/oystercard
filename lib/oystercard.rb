@@ -25,8 +25,8 @@ class Oystercard
   end
 
   def touch_out(station)
-    deduct(MIN_FARE)
     @journey.exit_station(station)
+    
   end
 
   private
