@@ -12,6 +12,7 @@ class Journey
   end
 
   def entry_station(station)
+    save_journey(@current_journey) if in_journey?
     @current_journey[:entry_station] = station
   end
 
@@ -25,9 +26,9 @@ class Journey
     @current_journey = {}
   end
 
-  def fare
-    Oystercard::PENALTY_FARE if current_journey.has_key?(:exit_station) == false
-    Oystercard::MIN_FARE
-  end
+  # def fare
+  #   Oystercard::PENALTY_FARE if current_journey.has_key?(:exit_station) == false
+  #   Oystercard::MIN_FARE
+  # end
 
 end
