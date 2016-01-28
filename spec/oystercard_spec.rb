@@ -1,9 +1,10 @@
 require 'oystercard'
-require 'station'
 
 describe Oystercard do
   let(:entry_station) { double :station}
   let(:exit_station) { double :station}
+  let(:journey) { double :journey }
+  let(:journey_klass) { double :journey_klass, new: journey }
   subject(:oystercard) { described_class.new }
 
   it 'has a default balance of 0' do
@@ -28,11 +29,14 @@ describe Oystercard do
   describe '#touch_in' do
     context 'oystercard is topped up' do
       before do
+        allow(journey).to receive(:start_journey).with(entry_station)
+        allow(journey).to receive(:fare) { Journey::PENALTY_FARE }
         oystercard.top_up(10)
-        oystercard.touch_in(entry_station)
+        oystercard.touch_in(entry_station, journey_klass)
       end
 
       it 'deducts the penalty fare if the previous journey was not completed' do
+        allow(oystercard).to receive(:in_journey?) { true }
         expect{oystercard.touch_in(entry_station)}.to change{oystercard.balance}.by (-Journey::PENALTY_FARE)
       end
 
@@ -54,8 +58,11 @@ describe Oystercard do
   context 'oystercar is touched in' do
 
     before do
+      allow(journey).to receive(:start_journey).with(entry_station)
+      allow(journey).to receive(:end_journey).with(exit_station)
+      allow(journey).to receive(:fare) { Journey::MIN_FARE }
       oystercard.top_up(10)
-      oystercard.touch_in(entry_station)
+      oystercard.touch_in(entry_station, journey_klass)
     end
 
     describe '#touch_out' do
