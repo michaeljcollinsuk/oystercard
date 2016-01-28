@@ -1,23 +1,19 @@
-require_relative 'oystercard.rb'
 
 class Journey
   MIN_FARE = 1
   PENALTY_FARE = 6
-  attr_reader :current_journey
-  def initialize
-    @current_journey = {}
-  end
+  attr_reader :entry_station, :exit_station
 
   def start_journey(entry_station)
-    @current_journey[:start] = entry_station
+    @entry_station = entry_station
   end
 
   def end_journey(exit_station)
-    @current_journey[:end] = exit_station
+    @exit_station = exit_station
   end
 
   def journey_complete?
-    current_journey.has_key?(:start) && current_journey.has_key?(:end)
+    @entry_station && @exit_station ? true : false
   end
 
   def fare

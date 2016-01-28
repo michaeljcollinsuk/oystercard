@@ -1,4 +1,5 @@
 require 'oystercard'
+require 'station'
 
 describe Oystercard do
   let(:entry_station) { double :station}
@@ -38,7 +39,7 @@ describe Oystercard do
       it 'saves the illegal journey to journey_history' do
         another_station = double(:station)
         oystercard.touch_in(another_station)
-        expect(oystercard.journey_history).to include ({:start => entry_station})
+        expect(oystercard.journey_history.size).to eq 1
       end
 
     end
@@ -65,7 +66,7 @@ describe Oystercard do
 
       it 'records a journey' do
         oystercard.touch_out(exit_station)
-        expect(oystercard.journey_history).to include ({:start => entry_station, :end => exit_station})
+        expect(oystercard.journey_history.size).to eq 1
       end
     end
   end

@@ -1,3 +1,4 @@
+require_relative 'station.rb'
 require_relative 'journey.rb'
 
 class Oystercard
@@ -17,16 +18,16 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in(station, journey = Journey.new)
+  def touch_in(station, journey_klass = Journey)
     raise 'Balance is too low' if @balance < MIN_BALANCE
-    deduct(@journey.fare) && @journey_history << @journey.current_journey if in_journey?
-    (@journey = journey).start_journey(station)
+    deduct(@journey.fare) && @journey_history << @journey if in_journey?
+    (@journey = journey_klass.new).start_journey(station)
   end
 
-  def touch_out(station, journey = Journey.new)
-    (@journey ||= Journey.new).end_journey(station)
+  def touch_out(station, journey_klass = Journey)
+    (@journey ||= journey_klass.new).end_journey(station)
     deduct(@journey.fare)
-    @journey_history << @journey.current_journey
+    @journey_history << @journey
     @journey = nil
   end
 

@@ -9,14 +9,14 @@ describe Journey do
   describe '#start_journey' do
     it 'stores the entry station in the current_journey hash' do
       journey.start_journey(entry_station)
-      expect(journey.current_journey).to include {entry_station}
+      expect(journey.entry_station).to eq entry_station
     end
   end
 
   describe '#end_journey' do
     it 'stores the exit station in the current_journey hash' do
       journey.end_journey(exit_station)
-      expect(journey.current_journey).to include {exit_station}
+      expect(journey.exit_station).to eq exit_station
     end
   end
 
@@ -25,7 +25,7 @@ describe Journey do
     before do
       journey.start_journey(entry_station)
     end
-    
+
     describe '#journey_complete?' do
       it 'returns false when the journey is incomplete' do
         expect(journey.journey_complete?).to eq false
