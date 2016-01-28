@@ -9,8 +9,8 @@ describe Oystercard do
     expect(oystercard.balance).to eq 0
   end
 
-  it 'keeps track of journeys' do
-    expect(oystercard.journeys).to be_empty
+  it 'keeps track of journey_history' do
+    expect(oystercard.journey_history).to be_empty
   end
 
   describe '#top_up' do
@@ -24,20 +24,21 @@ describe Oystercard do
     end
   end
 
-  describe '#in_journey?' do
-    it 'defaults to false' do
-      expect(oystercard).to_not be_in_journey
-    end
-  end
-
   describe '#touch_in' do
     context 'oystercard is topped up' do
       before do
-        oystercard.top_up(1)
+        oystercard.top_up(10)
+        oystercard.touch_in(entry_station)
       end
 
-      it 'sets the oyster card to be in journey' do
-        expect{oystercard.touch_in(entry_station)}.to change{oystercard.in_journey?}.to true
+      it 'deducts the penalty fare if the previous journey was not completed' do
+        expect{oystercard.touch_in(entry_station)}.to change{oystercard.balance}.by (-Journey::PENALTY_FARE)
+      end
+
+      it 'saves the illegal journey to journey_history' do
+        another_station = double(:station)
+        oystercard.touch_in(another_station)
+        expect(oystercard.journey_history).to include ({:start => entry_station})
       end
 
     end
@@ -52,26 +53,20 @@ describe Oystercard do
   context 'oystercar is touched in' do
 
     before do
-      oystercard.top_up(1)
+      oystercard.top_up(10)
       oystercard.touch_in(entry_station)
     end
 
     describe '#touch_out' do
-      it 'sets the oyster card to no longer be in journey' do
-        expect{oystercard.touch_out(exit_station)}.to change{oystercard.in_journey?}.to false
-      end
 
-      it 'deducts the minimum amount' do
-        expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::MIN_FARE)
+      it 'deducts the fare' do
+        expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Journey::MIN_FARE)
       end
-
-      let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
 
       it 'records a journey' do
         oystercard.touch_out(exit_station)
-        expect(oystercard.journeys).to include journey
+        expect(oystercard.journey_history).to include ({:start => entry_station, :end => exit_station})
       end
     end
   end
-
 end
