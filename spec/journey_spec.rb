@@ -47,5 +47,7 @@ describe Journey do
         expect(journey.fare).to eq Journey::MIN_FARE
       end
     end
+
+    
   end
 end

@@ -32,18 +32,12 @@ describe Oystercard do
         allow(journey).to receive(:start_journey).with(entry_station)
         allow(journey).to receive(:fare) { Journey::PENALTY_FARE }
         oystercard.top_up(10)
-        oystercard.touch_in(entry_station, journey_klass)
+        oystercard.touch_in(entry_station)
       end
 
       it 'deducts the penalty fare if the previous journey was not completed' do
         allow(oystercard).to receive(:in_journey?) { true }
         expect{oystercard.touch_in(entry_station)}.to change{oystercard.balance}.by (-Journey::PENALTY_FARE)
-      end
-
-      it 'saves the illegal journey to journey_history' do
-        another_station = double(:station)
-        oystercard.touch_in(another_station)
-        expect(oystercard.journey_history.size).to eq 1
       end
 
     end
@@ -62,7 +56,7 @@ describe Oystercard do
       allow(journey).to receive(:end_journey).with(exit_station)
       allow(journey).to receive(:fare) { Journey::MIN_FARE }
       oystercard.top_up(10)
-      oystercard.touch_in(entry_station, journey_klass)
+      oystercard.touch_in(entry_station)
     end
 
     describe '#touch_out' do
@@ -70,11 +64,13 @@ describe Oystercard do
       it 'deducts the fare' do
         expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Journey::MIN_FARE)
       end
-
-      it 'records a journey' do
-        oystercard.touch_out(exit_station)
-        expect(oystercard.journey_history.size).to eq 1
-      end
     end
+
+    # describe '#history' do
+    #   it 'returns the history from the JourneyLog' do
+    #
+    #   end
+    # end
+
   end
 end

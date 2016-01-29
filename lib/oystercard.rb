@@ -1,5 +1,6 @@
 require_relative 'station.rb'
 require_relative 'journey.rb'
+require_relative 'journey_log.rb'
 
 class Oystercard
   attr_reader :balance, :entry_station, :exit_station, :journey_history
@@ -8,9 +9,10 @@ class Oystercard
   MAX_BALANCE = 90
   MIN_BALANCE = 1
 
-  def initialize(balance = DEFAULT_BALANCE)
+  def initialize(balance = DEFAULT_BALANCE, journey_klass = JourneyLog)
     @balance = balance
     @journey_history = []
+    @journeylog = journey_klass.new
   end
 
   def top_up(amount)
@@ -18,17 +20,19 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in(station, journey_klass = Journey)
+  def touch_in(station)
     raise 'Balance is too low' if @balance < MIN_BALANCE
-    deduct(@journey.fare) && @journey_history << @journey if in_journey?
-    (@journey = journey_klass.new).start_journey(station)
+    deduct(@journeylog.charge) if in_journey?
+    @journeylog.start_journey(station)
   end
 
-  def touch_out(station, journey_klass = Journey)
-    (@journey ||= journey_klass.new).end_journey(station)
-    deduct(@journey.fare)
-    @journey_history << @journey
-    @journey = nil
+  def touch_out(station)
+    @journeylog.end_journey(station)
+    deduct(@journeylog.charge)
+  end
+
+  def history
+    @journeylog.journeys
   end
 
   private
@@ -38,7 +42,7 @@ class Oystercard
   end
 
   def in_journey?
-    @journey
+    @journeylog.journey
   end
 
 end
