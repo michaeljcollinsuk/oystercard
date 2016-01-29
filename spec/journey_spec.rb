@@ -43,11 +43,21 @@ describe Journey do
       end
 
       it 'should charge the minimum fare for a legal journey' do
+        allow(entry_station).to receive(:zone) { 1 }
+        allow(exit_station).to receive(:zone) { 1 }
         journey.end_journey(exit_station)
         expect(journey.fare).to eq Journey::MIN_FARE
       end
     end
 
-    
+    describe '#calculate_zone' do
+      let(:entry_station) { double :entry_station, :name => 'Algate', :zone => 1 }
+      let(:exit_station) { double :exit_station, :name => 'Sheffield', :zone => 3 }
+      it 'calculates the cost for zones travelled' do
+        journey.start_journey(entry_station)
+        journey.end_journey(exit_station)
+        expect(journey.calculate_zone).to eq 2
+      end
+    end
   end
 end

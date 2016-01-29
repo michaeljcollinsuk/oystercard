@@ -62,6 +62,8 @@ describe Oystercard do
     describe '#touch_out' do
 
       it 'deducts the fare' do
+        allow(entry_station).to receive(:zone) { 1 }
+        allow(exit_station).to receive(:zone) { 1 }
         expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Journey::MIN_FARE)
       end
     end

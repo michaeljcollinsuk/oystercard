@@ -17,7 +17,11 @@ class Journey
   end
 
   def fare
-    journey_complete? ? MIN_FARE : PENALTY_FARE
+    journey_complete? ? MIN_FARE + calculate_zone : PENALTY_FARE
+  end
+
+  def calculate_zone
+    (entry_station.zone - exit_station.zone).abs * MIN_FARE
   end
 
 end
